@@ -1,1 +1,1 @@
-# Sz-m-t-g-piGrafika
+# SzamitogepiGrafika

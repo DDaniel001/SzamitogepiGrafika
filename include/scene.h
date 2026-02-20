@@ -3,12 +3,16 @@
 
 #include "camera.h"
 #include "texture.h"
+#include <obj/model.h>
 
 /**
  * Scene structure holding textures, models, and lighting information.
  */
 typedef struct Scene {
     GLuint floor_texture;
+    Model anvil;
+    GLuint anvil_texture;
+    float light_intensity;
 } Scene;
 
 /**

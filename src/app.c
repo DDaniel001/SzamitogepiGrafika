@@ -51,10 +51,12 @@ bool init_app(App* app, int width, int height, const char* title) {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_NORMALIZE);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     init_camera(&(app->camera));
     init_scene(&(app->scene));
+    
     SDL_SetRelativeMouseMode(SDL_TRUE);
     app->last_time = SDL_GetTicks();
     set_projection(app->window_width, app->window_height);
@@ -88,6 +90,16 @@ void handle_input(App* app) {
                     case SDLK_s: app->camera.is_moving_backward = true; break;
                     case SDLK_a: app->camera.is_stepping_left = true; break;
                     case SDLK_d: app->camera.is_stepping_right = true; break;
+
+                    /* Light intensity control */
+                    case SDLK_KP_PLUS:
+                    app->scene.light_intensity += 0.1f;
+                    if (app->scene.light_intensity > 2.0f) app->scene.light_intensity = 2.0f;
+                    break;
+                    case SDLK_KP_MINUS:
+                    app->scene.light_intensity -= 0.1f;
+                    if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
+                    break;
                 }
                 break;
 

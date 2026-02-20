@@ -11,8 +11,8 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 ### Alapkövetelmények (Elégséges szint)
 - [x] **Kamerakezelés:** A tér egérrel és billentyűzettel (WASD) szabadon bejárható.
 - [x] **Textúrák:** A 3D modellekre és a környezetre textúrák vannak feszítve (pl. kőpadló).
-- [ ] **Objektumok:** Térbeli 3D modellek (obj fájlok) betöltése és megjelenítése (pl. üllő, kard, fáklya).
-- [ ] **Fények:** A színtér bevilágítása, a fényerő interaktív állítása a `+` és `-` gombokkal.
+- [x] **Objektumok:** Térbeli 3D modellek (obj fájlok) betöltése és megjelenítése (pl. üllő, kard, fáklya).
+- [x] **Fények:** A színtér bevilágítása, a fényerő interaktív állítása a `+` és `-` gombokkal.
 - [ ] **Animáció:** Interaktív, időalapú (Delta time) mozgás (pl. lebegő/forgó kard).
 - [ ] **Használati útmutató:** Az `F1` gomb lenyomására megjelenő 2D-s overlay súgó.
 
@@ -29,9 +29,10 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 | :--- | :--- |
 | **W, A, S, D** | Mozgás előre, hátra, balra, jobbra |
 | **Egér mozgatása** | Nézelődés (Kamera forgatása) |
+| **Numpad +** | Fényerősség növelése |
+| **Numpad -** | Fényerősség csökkentése |
 | **ESC** | Kilépés a programból |
-| **F1** | Súgó megjelenítése / elrejtése *(fejlesztés alatt)* |
-| **Numpad + / -** | Fényerősség növelése és csökkentése *(fejlesztés alatt)* |
+| **F1** | Súgó megjelenítése / elrejtése (fejlesztés alatt) |
 
 ---
 
@@ -51,3 +52,18 @@ A program fordításához Windows rendszeren a **MinGW** környezet szükséges 
    ```bash
    make
    blacksmith.exe
+
+---
+
+## Felhasznált Források (Assets)
+
+A projektben felhasznált 3D modellek és textúrák külső forrásból származnak:
+
+* **Üllő 3D modell (Anvil):** [Free3D.com - Anvil by printable_models](https://free3d.com/3d-model/anvil-342094.html) (A modell motorhoz igazítva, triangulálva lett).
+* **Üllő fém textúra:** [Freepik - Metallic background with grunge scratched effect](https://www.freepik.com/free-photo/metallic-background-with-grunge-scratched-effect_13839423.htm)
+* **Padló textúra (Cobblestone):** [OpenGameArt - Seamless Cobblestone Texture by pzUH](https://opengameart.org/content/seamless-cobblestone-texture)
+
+---
+
+**Készítette:** Dudás Dániel  
+**Neptun kód:** ADVLIC

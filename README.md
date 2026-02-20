@@ -50,3 +50,4 @@ A program fordításához Windows rendszeren a **MinGW** környezet szükséges 
 3. Addja ki a fordítás parancsát:
    ```bash
    make
+   blacksmith.exe

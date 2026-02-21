@@ -14,7 +14,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 - [x] **Objektumok:** Térbeli 3D modellek (obj fájlok) betöltése és megjelenítése (pl. üllő, kard, fáklya).
 - [x] **Fények:** A színtér bevilágítása, a fényerő interaktív állítása a `+` és `-` gombokkal.
 - [ ] **Animáció:** Interaktív, időalapú (Delta time) mozgás (pl. lebegő/forgó kard).
-- [ ] **Használati útmutató:** Az `F1` gomb lenyomására megjelenő 2D-s overlay súgó.
+- [x] **Használati útmutató:** Az `F1` gomb lenyomására megjelenő 2D-s overlay súgó.
 
 ### Tervezett Többletfunkciók (+3 jegy)
 - [ ] **Ütközésvizsgálat (Bounding-box):** A kamerával nem lehet átmenni a falakon és a tárgyakon.
@@ -32,7 +32,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 | **Numpad +** | Fényerősség növelése |
 | **Numpad -** | Fényerősség csökkentése |
 | **ESC** | Kilépés a programból |
-| **F1** | Súgó megjelenítése / elrejtése (fejlesztés alatt) |
+| **F1** | Súgó megjelenítése / elrejtése |
 
 ---
 

@@ -12,7 +12,9 @@ typedef struct Scene {
     GLuint floor_texture;
     Model anvil;
     GLuint anvil_texture;
+    GLuint help_texture;
     float light_intensity;
+    int show_help;
 } Scene;
 
 /**

@@ -90,16 +90,19 @@ void handle_input(App* app) {
                     case SDLK_s: app->camera.is_moving_backward = true; break;
                     case SDLK_a: app->camera.is_stepping_left = true; break;
                     case SDLK_d: app->camera.is_stepping_right = true; break;
-
+                    
+                    case SDLK_F1:
+                        app->scene.show_help = !app->scene.show_help;
+                        break;
                     /* Light intensity control */
                     case SDLK_KP_PLUS:
-                    app->scene.light_intensity += 0.1f;
-                    if (app->scene.light_intensity > 2.0f) app->scene.light_intensity = 2.0f;
-                    break;
+                        app->scene.light_intensity += 0.1f;
+                        if (app->scene.light_intensity > 2.0f) app->scene.light_intensity = 2.0f;
+                        break;
                     case SDLK_KP_MINUS:
-                    app->scene.light_intensity -= 0.1f;
-                    if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
-                    break;
+                        app->scene.light_intensity -= 0.1f;
+                        if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
+                        break;
                 }
                 break;
 

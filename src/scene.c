@@ -38,11 +38,55 @@ void init_scene(Scene* scene) {
     if (!load_model(&(scene->anvil), "assets/models/anvil.obj")) {
         printf("Error: Failed to load anvil model!\n");
     }
+
+    /* Initialize help overlay */
+    scene->show_help = 0;
+    scene->help_texture = load_texture("assets/textures/help.png");
 }
 
 void update_scene(Scene* scene, double time_step) {
     (void)scene;
     (void)time_step;
+}
+
+/* Helper function to draw a help overlay */
+void draw_help(GLuint texture_id) {
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    /* Set color to white to show the texture original colors */
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    /* Define logical 2D coordinate system (800x600) */
+    glOrtho(0, 800, 600, 0, -1, 1); 
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    /* Draw the help image centered (400x300 size in the middle) */
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(200, 150);
+        glTexCoord2f(1, 0); glVertex2f(600, 150);
+        glTexCoord2f(1, 1); glVertex2f(600, 450);
+        glTexCoord2f(0, 1); glVertex2f(200, 450);
+    glEnd();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
 }
 
 void render_scene(const Scene* scene) {
@@ -95,4 +139,9 @@ void render_scene(const Scene* scene) {
     glPopMatrix();
     
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Draw help overlay if enabled */
+    if (scene->show_help) {
+        draw_help(scene->help_texture);
+    }
 }

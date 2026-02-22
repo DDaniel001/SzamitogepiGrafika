@@ -7,6 +7,8 @@ bool init_app(App* app, int width, int height, const char* title) {
     app->is_running = false;
     app->window_width = width;
     app->window_height = height;
+    app->is_mouse_captured = true;
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL initialization error: %s\n", SDL_GetError());
@@ -103,6 +105,11 @@ void handle_input(App* app) {
                         app->scene.light_intensity -= 0.1f;
                         if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
                         break;
+
+                    case SDLK_TAB: /* Mouse toggle logic */
+                        app->is_mouse_captured = !app->is_mouse_captured;
+                        SDL_SetRelativeMouseMode(app->is_mouse_captured ? SDL_TRUE : SDL_FALSE);
+                        break;
                 }
                 break;
 
@@ -116,11 +123,14 @@ void handle_input(App* app) {
                 break;
                 
             case SDL_MOUSEMOTION:
-                app->camera.rotation_y += event.motion.xrel * 0.2f;
-                app->camera.rotation_x += event.motion.yrel * 0.2f;
-                
-                if (app->camera.rotation_x > 90.0f) app->camera.rotation_x = 90.0f;
-                if (app->camera.rotation_x < -90.0f) app->camera.rotation_x = -90.0f;
+                /* Only rotate camera if mouse is captured */
+                if (app->is_mouse_captured) {
+                    app->camera.rotation_y += event.motion.xrel * 0.2f;
+                    app->camera.rotation_x += event.motion.yrel * 0.2f;
+                    
+                    if (app->camera.rotation_x > 90.0f) app->camera.rotation_x = 90.0f;
+                    if (app->camera.rotation_x < -90.0f) app->camera.rotation_x = -90.0f;
+                }
                 break;
         }
     }

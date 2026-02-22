@@ -94,7 +94,7 @@ void render_scene(const Scene* scene) {
     float i = scene->light_intensity;
 
     /* Update light components based on intensity */
-    GLfloat ambient_light[]  = { 0.3f * i, 0.3f * i, 0.3f * i, 1.0f };
+    GLfloat ambient_light[]  = { 0.1f, 0.1f, 0.1f, 1.0f }; /* Constant dim light */
     GLfloat diffuse_light[]  = { 0.8f * i, 0.8f * i, 0.8f * i, 1.0f };
     GLfloat specular_light[] = { 1.0f * i, 1.0f * i, 1.0f * i, 1.0f };
 

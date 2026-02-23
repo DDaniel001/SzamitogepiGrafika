@@ -13,7 +13,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 - [x] **Textúrák:** A 3D modellekre és a környezetre textúrák vannak feszítve (pl. kőpadló).
 - [x] **Objektumok:** Térbeli 3D modellek (obj fájlok) betöltése és megjelenítése (pl. üllő, kard, fáklya).
 - [x] **Fények:** A színtér bevilágítása, a fényerő interaktív állítása a `+` és `-` gombokkal.
-- [ ] **Animáció:** Interaktív, időalapú (Delta time) mozgás (pl. lebegő/forgó kard).
+- [x] **Animáció:** Interaktív, időalapú (Delta time) mozgás (pl. lebegő/forgó kard).
 - [x] **Használati útmutató:** Az `F1` gomb lenyomására megjelenő 2D-s overlay súgó.
 
 ### Tervezett Többletfunkciók (+3 jegy)
@@ -63,6 +63,7 @@ A projektben felhasznált 3D modellek és textúrák külső forrásból szárma
 * **Üllő 3D modell (Anvil):** [Free3D.com - Anvil by printable_models](https://free3d.com/3d-model/anvil-342094.html) (A modell motorhoz igazítva, triangulálva lett).
 * **Üllő fém textúra:** [Freepik - Metallic background with grunge scratched effect](https://www.freepik.com/free-photo/metallic-background-with-grunge-scratched-effect_13839423.htm)
 * **Padló textúra (Cobblestone):** [OpenGameArt - Seamless Cobblestone Texture by pzUH](https://opengameart.org/content/seamless-cobblestone-texture)
+* **Kard textúra és 3D modell (Sword):** [Free3D.com - Sting Sword](https://free3d.com/3d-model/sting-sword-128810.html) (A modell motorhoz igazítva, triangulálva lett).
 
 ---
 

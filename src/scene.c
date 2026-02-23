@@ -39,6 +39,17 @@ void init_scene(Scene* scene) {
         printf("Error: Failed to load anvil model!\n");
     }
 
+    scene->sword_texture = load_texture("assets/textures/sword.png");
+    if (scene->sword_texture == 0) {
+        printf("Error: Failed to load sword texture!\n");
+    }
+
+    if (!load_model(&(scene->sword), "assets/models/sword.obj")) {
+        printf("Error: Failed to load sword model!\n");
+    }
+
+    scene->sword_rotation = 0.0f;
+
     /* Initialize help overlay */
     scene->show_help = 0;
     scene->help_texture = load_texture("assets/textures/help.png");
@@ -47,6 +58,13 @@ void init_scene(Scene* scene) {
 void update_scene(Scene* scene, double time_step) {
     (void)scene;
     (void)time_step;
+
+    /* Update sword rotation based on time_step */
+    scene->sword_rotation += 45.0f * (float)time_step;
+
+    if (scene->sword_rotation > 360.0f) {
+        scene->sword_rotation -= 360.0f;
+    }
 }
 
 /* Helper function to draw the help overlay */
@@ -162,6 +180,18 @@ void render_scene(const Scene* scene) {
         glMaterialfv(GL_FRONT, GL_SPECULAR, default_specular);
     glPopMatrix();
     
+    /* 3. Render rotating sword on top of the anvil */
+    glPushMatrix();
+        /* Position above the anvil */
+        glTranslatef(0.0f, 0.9f, -3.0f); 
+        /* Rotate the sword around Y axis */
+        glRotatef(scene->sword_rotation, 0.0f, 1.0f, 0.0f);
+        glScalef(0.05f, 0.05f, 0.05f);
+
+        glBindTexture(GL_TEXTURE_2D, scene->sword_texture);
+        draw_model(&(scene->sword));
+    glPopMatrix();
+
     glBindTexture(GL_TEXTURE_2D, 0);
 
     /* Draw help overlay if enabled */

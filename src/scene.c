@@ -49,8 +49,14 @@ void update_scene(Scene* scene, double time_step) {
     (void)time_step;
 }
 
-/* Helper function to draw a help overlay */
+/* Helper function to draw the help overlay */
 void draw_help(GLuint texture_id) {
+    /* Get current window dimensions from viewport */
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    int width = viewport[2];
+    int height = viewport[3];
+
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
@@ -58,25 +64,42 @@ void draw_help(GLuint texture_id) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glBindTexture(GL_TEXTURE_2D, texture_id);
-    /* Set color to white to show the texture original colors */
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    /* Define logical 2D coordinate system (800x600) */
-    glOrtho(0, 800, 600, 0, -1, 1); 
+    /* Use pixel-based coordinate system to prevent distortion */
+    glOrtho(0, width, height, 0, -1, 1); 
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
 
-    /* Draw the help image centered (400x300 size in the middle) */
+    /* Set help window size and center it */
+    float helpW = 600.0f;
+    float helpH = 450.0f;
+
+    /* Scale help window if the actual window is too small, maintaining aspect ratio */
+    if (helpW > width * 0.9f) {
+        helpW = width * 0.9f;
+        helpH = helpW * 0.75f;
+    }
+    if (helpH > height * 0.9f) {
+        helpH = height * 0.9f;
+        helpW = helpH * 1.333f;
+    }
+
+    float x1 = (width - helpW) / 2.0f;
+    float y1 = (height - helpH) / 2.0f;
+    float x2 = x1 + helpW;
+    float y2 = y1 + helpH;
+
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(200, 150);
-        glTexCoord2f(1, 0); glVertex2f(600, 150);
-        glTexCoord2f(1, 1); glVertex2f(600, 450);
-        glTexCoord2f(0, 1); glVertex2f(200, 450);
+        glTexCoord2f(0, 0); glVertex2f(x1, y1);
+        glTexCoord2f(1, 0); glVertex2f(x2, y1);
+        glTexCoord2f(1, 1); glVertex2f(x2, y2);
+        glTexCoord2f(0, 1); glVertex2f(x1, y2);
     glEnd();
 
     glMatrixMode(GL_PROJECTION);
@@ -93,8 +116,9 @@ void render_scene(const Scene* scene) {
     /* Get current intensity */
     float i = scene->light_intensity;
 
-    /* Update light components based on intensity */
-    GLfloat ambient_light[]  = { 0.1f, 0.1f, 0.1f, 1.0f }; /* Constant dim light */
+    /* Update light components based on intensity. 
+       Keep ambient light constant to avoid "monitor brightness" effect. */
+    GLfloat ambient_light[]  = { 0.15f, 0.15f, 0.15f, 1.0f }; 
     GLfloat diffuse_light[]  = { 0.8f * i, 0.8f * i, 0.8f * i, 1.0f };
     GLfloat specular_light[] = { 1.0f * i, 1.0f * i, 1.0f * i, 1.0f };
 

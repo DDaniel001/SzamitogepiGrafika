@@ -4,6 +4,17 @@
 #include <obj/load.h>
 #include <obj/draw.h>
 
+/* Helper function to add a bounding box to the scene */
+void add_box(Scene* scene, float min_x, float max_x, float min_z, float max_z) {
+    if (scene->box_count < 10) {
+        scene->boxes[scene->box_count].min_x = min_x;
+        scene->boxes[scene->box_count].max_x = max_x;
+        scene->boxes[scene->box_count].min_z = min_z;
+        scene->boxes[scene->box_count].max_z = max_z;
+        scene->box_count++;
+    }
+}
+
 void init_scene(Scene* scene) {
     glEnable(GL_TEXTURE_2D);
 
@@ -50,26 +61,63 @@ void init_scene(Scene* scene) {
 
     scene->sword_rotation = 0.0f;
 
+    /* Setup collision detection (Bounding boxes) */
+    scene->box_count = 0;
+
+    /* 1. Box around the anvil */
+    add_box(scene, -0.4f, 0.4f, -4.2f, -1.8f);
+
+    /* 2. Boxes for walls */
+    add_box(scene, -11.0f, -10.0f, -10.0f, 10.0f); /* Left wall */
+    add_box(scene, 10.0f, 11.0f, -10.0f, 10.0f);   /* Right wall */
+    add_box(scene, -10.0f, 10.0f, -11.0f, -10.0f); /* Front wall */
+    add_box(scene, -10.0f, 10.0f, 10.0f, 11.0f);   /* Back wall */
+
     /* Initialize help overlay */
     scene->show_help = 0;
     scene->help_texture = load_texture("assets/textures/help.png");
 }
 
-void update_scene(Scene* scene, double time_step) {
-    (void)scene;
-    (void)time_step;
+void update_scene(Scene* scene, double time_step, float player_x, float player_z) {
+    /* The sword is positioned at X = 0.0, Z = -3.0 */
+    float sword_x = 0.0f;
+    float sword_z = -3.0f;
+    
+    /* The reach of the sword. Adjust this if it stops too early or too late */
+    float sword_reach = 2.0f; 
 
-    /* Update sword rotation based on time_step */
-    scene->sword_rotation += 45.0f * (float)time_step;
+    float dx = player_x - sword_x;
+    float dz = player_z - sword_z;
+    float distance_squared = (dx * dx) + (dz * dz);
 
-    if (scene->sword_rotation > 360.0f) {
-        scene->sword_rotation -= 360.0f;
+    /* Only rotate the sword if the player is outside its reach */
+    if (distance_squared > (sword_reach * sword_reach)) {
+        /* Update sword rotation based on time_step */
+        scene->sword_rotation += 45.0f * (float)time_step;
+
+        if (scene->sword_rotation > 360.0f) {
+            scene->sword_rotation -= 360.0f;
+        }
     }
+}
+
+bool check_collision(const Scene* scene, float x, float z) {
+    /* Check AABB boxes (Anvil, walls) 
+       The anvil's box is enough to protect the vertical sword! */
+    for (int i = 0; i < scene->box_count; i++) {
+        BoundingBox box = scene->boxes[i];
+        
+        /* If the coordinates are inside the box */
+        if (x >= box.min_x && x <= box.max_x &&
+            z >= box.min_z && z <= box.max_z) {
+            return true; /* Collision detected! */
+        }
+    }
+    return false; /* No collision */
 }
 
 /* Helper function to draw the help overlay */
 void draw_help(GLuint texture_id) {
-    /* Get current window dimensions from viewport */
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     int width = viewport[2];
@@ -87,18 +135,15 @@ void draw_help(GLuint texture_id) {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    /* Use pixel-based coordinate system to prevent distortion */
     glOrtho(0, width, height, 0, -1, 1); 
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
 
-    /* Set help window size and center it */
     float helpW = 600.0f;
     float helpH = 450.0f;
 
-    /* Scale help window if the actual window is too small, maintaining aspect ratio */
     if (helpW > width * 0.9f) {
         helpW = width * 0.9f;
         helpH = helpW * 0.75f;
@@ -131,11 +176,8 @@ void draw_help(GLuint texture_id) {
 }
 
 void render_scene(const Scene* scene) {
-    /* Get current intensity */
     float i = scene->light_intensity;
 
-    /* Update light components based on intensity. 
-       Keep ambient light constant to avoid "monitor brightness" effect. */
     GLfloat ambient_light[]  = { 0.15f, 0.15f, 0.15f, 1.0f }; 
     GLfloat diffuse_light[]  = { 0.8f * i, 0.8f * i, 0.8f * i, 1.0f };
     GLfloat specular_light[] = { 1.0f * i, 1.0f * i, 1.0f * i, 1.0f };
@@ -144,7 +186,6 @@ void render_scene(const Scene* scene) {
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
 
-    /* Set light position */
     GLfloat light_position[] = { 0.0f, 4.0f, -1.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
@@ -167,7 +208,6 @@ void render_scene(const Scene* scene) {
         glRotatef(0.0f, 1.0f, 0.0f, 0.0f); 
         glScalef(0.4f, 0.4f, 0.4f);
 
-        /* Set material for metallic shininess */
         GLfloat material_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, 60.0f);
@@ -175,18 +215,22 @@ void render_scene(const Scene* scene) {
         glBindTexture(GL_TEXTURE_2D, scene->anvil_texture);        
         draw_model(&(scene->anvil));
         
-        /* Reset specular material to avoid shiny floor */
         GLfloat default_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         glMaterialfv(GL_FRONT, GL_SPECULAR, default_specular);
     glPopMatrix();
     
-    /* 3. Render rotating sword on top of the anvil */
+    /* 3. Render rotating, upright sword */
     glPushMatrix();
         /* Position above the anvil */
-        glTranslatef(0.0f, 0.9f, -3.0f); 
-        /* Rotate the sword around Y axis */
+        glTranslatef(0.0f, 1.75f, -3.0f); 
+        
+        /* Rotate the sword around Y axis for animation */
         glRotatef(scene->sword_rotation, 0.0f, 1.0f, 0.0f);
-        glScalef(0.05f, 0.05f, 0.05f);
+        
+        /* Stand the sword upright! */
+        glRotatef(90.0f, 90.0f, 0.0f, 1.0f);
+        
+        glScalef(0.03f, 0.03f, 0.03f);
 
         glBindTexture(GL_TEXTURE_2D, scene->sword_texture);
         draw_model(&(scene->sword));

@@ -141,8 +141,19 @@ void update_app(App* app) {
     double time_step = (current_time - app->last_time) / 1000.0;
     app->last_time = current_time;
 
+    float old_x = app->camera.x;
+    float old_z = app->camera.z;
+
     update_camera(&(app->camera), time_step);
-    update_scene(&(app->scene), time_step);
+
+    /* Check for collision at the new position */
+    if (check_collision(&(app->scene), app->camera.x, app->camera.z)) {
+        /* If collision occurred, revert to the old position (slide against walls) */
+        app->camera.x = old_x;
+        app->camera.z = old_z;
+    }
+
+    update_scene(&(app->scene), time_step, app->camera.x, app->camera.z);
 }
 
 void render_app(App* app) {

@@ -5,6 +5,12 @@
 #include "texture.h"
 #include <obj/model.h>
 
+
+typedef struct BoundingBox {
+    float min_x, max_x;
+    float min_z, max_z;
+} BoundingBox;
+
 /**
  * Scene structure holding textures, models, and lighting information.
  */
@@ -18,6 +24,9 @@ typedef struct Scene {
     GLuint help_texture;
     float light_intensity;
     int show_help;
+
+    BoundingBox boxes[10];
+    int box_count;
 } Scene;
 
 /**
@@ -31,12 +40,14 @@ void init_scene(Scene* scene);
  * @param scene Pointer to the scene structure.
  * @param time_step The elapsed time since the last frame (in seconds).
  */
-void update_scene(Scene* scene, double time_step);
+void update_scene(Scene* scene, double time_step, float player_x, float player_z);
 
 /**
  * Renders the scene's 3D models and applies textures and lighting.
  * @param scene Pointer to the scene structure.
  */
 void render_scene(const Scene* scene);
+
+bool check_collision(const Scene* scene, float x, float z);
 
 #endif

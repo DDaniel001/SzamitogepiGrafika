@@ -17,7 +17,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 - [x] **Használati útmutató:** Az `F1` gomb lenyomására megjelenő 2D-s overlay súgó.
 
 ### Tervezett Többletfunkciók (+3 jegy)
-- [ ] **Ütközésvizsgálat (Bounding-box):** A kamerával nem lehet átmenni a falakon és a tárgyakon.
+- [x] **Ütközésvizsgálat (Bounding-box):** A kamerával nem lehet átmenni a falakon és a tárgyakon.
 - [ ] **Köd hatás (Fog):** Dinamikus, távolságfüggő köd/füst a műhely levegőjében a hangulat fokozására.
 - [ ] **Részecskerendszer (Particle system):** Felszálló szikrák vagy tűz a fáklya/üllő körül.
 

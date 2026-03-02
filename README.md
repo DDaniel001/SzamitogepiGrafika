@@ -64,6 +64,8 @@ A projektben felhasznált 3D modellek és textúrák külső forrásból szárma
 * **Üllő fém textúra:** [Freepik - Metallic background with grunge scratched effect](https://www.freepik.com/free-photo/metallic-background-with-grunge-scratched-effect_13839423.htm)
 * **Padló textúra (Cobblestone):** [OpenGameArt - Seamless Cobblestone Texture by pzUH](https://opengameart.org/content/seamless-cobblestone-texture)
 * **Kard textúra és 3D modell (Sword):** [Free3D.com - Sting Sword](https://free3d.com/3d-model/sting-sword-128810.html) (A modell motorhoz igazítva, triangulálva lett).
+* **Fal textúra (Wall):** [Pixabay.com](https://pixabay.com/photos/brick-wall-red-structure-masonry-1916752)
+* **Plafon textúra (Ceiling):** [Pixabay.com](https://pixabay.com/photos/wood-wooden-boards-wooden-planks-411643)
 
 ---
 

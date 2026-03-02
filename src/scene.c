@@ -41,6 +41,16 @@ void init_scene(Scene* scene) {
         printf("Error: Failed to load floor texture!\n");
     }
 
+    scene->wall_texture = load_texture("assets/textures/wall.jpg");    
+    if (scene->wall_texture == 0) {
+        printf("Error: Failed to load wall texture!\n");
+    }
+
+    scene->ceiling_texture = load_texture("assets/textures/ceiling.jpg");
+    if (scene->ceiling_texture == 0) {
+        printf("Error: Failed to load ceiling texture!\n");
+    }
+
     scene->anvil_texture = load_texture("assets/textures/anvil.jpg");
     if (scene->anvil_texture == 0) {
         printf("Error: Failed to load anvil texture!\n");
@@ -68,10 +78,10 @@ void init_scene(Scene* scene) {
     add_box(scene, -0.4f, 0.4f, -4.2f, -1.8f);
 
     /* 2. Boxes for walls */
-    add_box(scene, -11.0f, -10.0f, -10.0f, 10.0f); /* Left wall */
-    add_box(scene, 10.0f, 11.0f, -10.0f, 10.0f);   /* Right wall */
-    add_box(scene, -10.0f, 10.0f, -11.0f, -10.0f); /* Front wall */
-    add_box(scene, -10.0f, 10.0f, 10.0f, 11.0f);   /* Back wall */
+    add_box(scene, -11.0f, -9.8f, -10.0f, 10.0f); /* Left wall */
+    add_box(scene,  9.8f,  11.0f, -10.0f, 10.0f); /* Right wall */
+    add_box(scene, -10.0f, 10.0f, -11.0f, -9.8f); /* Front wall */
+    add_box(scene, -10.0f, 10.0f,  9.8f,  11.0f); /* Back wall */
 
     /* Initialize help overlay */
     scene->show_help = 0;
@@ -200,6 +210,51 @@ void render_scene(const Scene* scene) {
         glTexCoord2f(10.0f, 0.0f);  glVertex3f( 10.0f, 0.0f, -10.0f);
         glTexCoord2f(10.0f, 10.0f); glVertex3f( 10.0f, 0.0f,  10.0f);
         glTexCoord2f(0.0f, 10.0f);  glVertex3f(-10.0f, 0.0f,  10.0f);
+    glEnd();
+    
+    /* 1.2 Render walls */
+    glBindTexture(GL_TEXTURE_2D, scene->wall_texture);
+    
+    glBegin(GL_QUADS);
+        /* Front wall (Z = -10.0f) - Normals pointing to +Z */
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 0.0f, -10.0f);
+        glTexCoord2f(2.0f, 0.0f); glVertex3f( 10.0f, 0.0f, -10.0f);
+        glTexCoord2f(2.0f, 1.0f); glVertex3f( 10.0f, 5.0f, -10.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0f, 5.0f, -10.0f);
+
+        /* Back wall (Z = 10.0f) - Normals pointing to -Z */
+        glNormal3f(0.0f, 0.0f, -1.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f( 10.0f, 0.0f, 10.0f);
+        glTexCoord2f(2.0f, 0.0f); glVertex3f(-10.0f, 0.0f, 10.0f);
+        glTexCoord2f(2.0f, 1.0f); glVertex3f(-10.0f, 5.0f, 10.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f( 10.0f, 5.0f, 10.0f);
+
+        /* Left wall (X = -10.0f) - Normals pointing to +X */
+        glNormal3f(1.0f, 0.0f, 0.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 0.0f,  10.0f);
+        glTexCoord2f(2.0f, 0.0f); glVertex3f(-10.0f, 0.0f, -10.0f);
+        glTexCoord2f(2.0f, 1.0f); glVertex3f(-10.0f, 5.0f, -10.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0f, 5.0f,  10.0f);
+
+        /* Right wall (X = 10.0f) - Normals pointing to -X */
+        glNormal3f(-1.0f, 0.0f, 0.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(10.0f, 0.0f, -10.0f);
+        glTexCoord2f(2.0f, 0.0f); glVertex3f(10.0f, 0.0f,  10.0f);
+        glTexCoord2f(2.0f, 1.0f); glVertex3f(10.0f, 5.0f,  10.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(10.0f, 5.0f, -10.0f);
+    glEnd();
+
+    /* 1.3 Render ceiling */
+    glBindTexture(GL_TEXTURE_2D, scene->ceiling_texture); 
+    
+    glNormal3f(0.0f, -1.0f, 0.0f); 
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 5.0f, -10.0f);
+        glTexCoord2f(4.0f, 0.0f); glVertex3f( 10.0f, 5.0f, -10.0f);
+        glTexCoord2f(4.0f, 4.0f); glVertex3f( 10.0f, 5.0f,  10.0f);
+        glTexCoord2f(0.0f, 4.0f); glVertex3f(-10.0f, 5.0f,  10.0f);
     glEnd();
 
     /* 2. Render anvil */

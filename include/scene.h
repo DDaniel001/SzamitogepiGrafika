@@ -16,6 +16,8 @@ typedef struct BoundingBox {
  */
 typedef struct Scene {
     GLuint floor_texture;
+    GLuint wall_texture;
+    GLuint ceiling_texture;
     Model anvil;
     GLuint anvil_texture;
     Model sword;

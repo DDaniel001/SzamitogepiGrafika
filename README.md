@@ -31,9 +31,10 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 | **Egér mozgatása** | Nézelődés (Kamera forgatása) |
 | **Numpad +** | Fényerősség növelése |
 | **Numpad -** | Fényerősség csökkentése |
+| **F / G** | Köd sűrűségének növelése / csökkentése |
 | **TAB** | Egér megjelenítése |
-| **ESC** | Kilépés a programból |
 | **F1** | Súgó megjelenítése / elrejtése |
+| **ESC** | Kilépés a programból |
 
 ---
 

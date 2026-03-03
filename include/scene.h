@@ -25,6 +25,7 @@ typedef struct Scene {
     float sword_rotation;
     GLuint help_texture;
     float light_intensity;
+    float fog_density;
     int show_help;
 
     BoundingBox boxes[10];

@@ -112,6 +112,16 @@ void handle_input(App* app) {
                         app->is_mouse_captured = !app->is_mouse_captured;
                         SDL_SetRelativeMouseMode(app->is_mouse_captured ? SDL_TRUE : SDL_FALSE);
                         break;
+
+                    /* Fog (F = denser, G = dimmer) */
+                    case SDLK_f:
+                        app->scene.fog_density += 0.01f;
+                        if (app->scene.fog_density > 0.5f) app->scene.fog_density = 0.5f; /* Max */
+                        break;
+                    case SDLK_g:
+                        app->scene.fog_density -= 0.01f;
+                        if (app->scene.fog_density < 0.0f) app->scene.fog_density = 0.0f; /* Min */
+                        break;
                 }
                 break;
 

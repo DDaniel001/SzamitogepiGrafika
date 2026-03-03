@@ -18,8 +18,9 @@ void add_box(Scene* scene, float min_x, float max_x, float min_z, float max_z) {
 void init_scene(Scene* scene) {
     glEnable(GL_TEXTURE_2D);
 
-    /* Initialize light intensity to default */
+    /* Initialize light, fog intensity to default */
     scene->light_intensity = 1.0f;
+    scene->fog_density = 0.08f;
 
     /* Setup lighting */
     glEnable(GL_LIGHTING);
@@ -210,7 +211,7 @@ void render_scene(const Scene* scene) {
     glFogi(GL_FOG_MODE, GL_EXP);
     
     /* Density */
-    glFogf(GL_FOG_DENSITY, 0.08f);
+    glFogf(GL_FOG_DENSITY, scene->fog_density);
     
     glHint(GL_FOG_HINT, GL_NICEST);
 

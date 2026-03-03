@@ -105,7 +105,7 @@ void update_scene(Scene* scene, double time_step, float player_x, float player_z
         /* Update sword rotation based on time_step */
         scene->sword_rotation += 45.0f * (float)time_step;
 
-        if (scene->sword_rotation > 360.0f) {
+        while (scene->sword_rotation > 360.0f) {
             scene->sword_rotation -= 360.0f;
         }
     }
@@ -196,10 +196,23 @@ void render_scene(const Scene* scene) {
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
 
-    GLfloat light_position[] = { 0.0f, 4.0f, -1.0f, 1.0f };
+    GLfloat light_position[] = { 0.0f, 2.5f, -1.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
     glColor3f(1.0f, 1.0f, 1.0f);
+
+    /* FOG */
+    glEnable(GL_FOG);
+    
+    GLfloat fog_color[] = { 0.15f, 0.15f, 0.15f, 1.0f };
+    glFogfv(GL_FOG_COLOR, fog_color);
+    
+    glFogi(GL_FOG_MODE, GL_EXP);
+    
+    /* Density */
+    glFogf(GL_FOG_DENSITY, 0.08f);
+    
+    glHint(GL_FOG_HINT, GL_NICEST);
 
     /* 1. Render floor */
     glBindTexture(GL_TEXTURE_2D, scene->floor_texture);
@@ -283,7 +296,7 @@ void render_scene(const Scene* scene) {
         glRotatef(scene->sword_rotation, 0.0f, 1.0f, 0.0f);
         
         /* Stand the sword upright! */
-        glRotatef(90.0f, 90.0f, 0.0f, 1.0f);
+        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
         
         glScalef(0.03f, 0.03f, 0.03f);
 

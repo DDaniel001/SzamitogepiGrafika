@@ -98,10 +98,12 @@ void handle_input(App* app) {
                         break;
                     /* Light intensity control */
                     case SDLK_KP_PLUS:
+                    case SDLK_PLUS:
                         app->scene.light_intensity += 0.1f;
                         if (app->scene.light_intensity > 2.0f) app->scene.light_intensity = 2.0f;
                         break;
                     case SDLK_KP_MINUS:
+                    case SDLK_MINUS:
                         app->scene.light_intensity -= 0.1f;
                         if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
                         break;
@@ -140,6 +142,10 @@ void update_app(App* app) {
     Uint32 current_time = SDL_GetTicks();
     double time_step = (current_time - app->last_time) / 1000.0;
     app->last_time = current_time;
+
+    if (time_step > 0.1) {
+        time_step = 0.1;
+    }
 
     float old_x = app->camera.x;
     float old_z = app->camera.z;

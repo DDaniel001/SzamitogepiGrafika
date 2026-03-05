@@ -19,7 +19,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 ### Tervezett Többletfunkciók (+3 jegy)
 - [x] **Ütközésvizsgálat (Bounding-box):** A kamerával nem lehet átmenni a falakon és a tárgyakon.
 - [x] **Köd hatás (Fog):** Dinamikus, távolságfüggő köd/füst a műhely levegőjében a hangulat fokozására.
-- [ ] **Részecskerendszer (Particle system):** Felszálló szikrák vagy tűz a fáklya/üllő körül.
+- [x] **Részecskerendszer (Particle system):** Felszálló szikrák vagy tűz a fáklya/üllő körül.
 - [ ] **Objektumkijelölés (Object selection):** Objektumok kijelölése egérrel.
 - [ ] **Árnyék (Shadow):** Objektumok árnyékot vetnek.
 

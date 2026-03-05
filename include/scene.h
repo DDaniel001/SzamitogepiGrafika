@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <stdlib.h>
 #include "camera.h"
 #include "texture.h"
 #include <obj/model.h>
@@ -10,6 +11,13 @@ typedef struct BoundingBox {
     float min_x, max_x;
     float min_z, max_z;
 } BoundingBox;
+
+typedef struct Particle {
+    float x, y, z;      /* Position */
+    float vx, vy, vz;   /* Velocity */
+    float life;         /* Lifespan (decreases from 1.0 to 0.0) */
+    float fade;         /* Fade speed */
+} Particle;
 
 /**
  * Scene structure holding textures, models, and lighting information.
@@ -30,6 +38,8 @@ typedef struct Scene {
 
     BoundingBox boxes[10];
     int box_count;
+
+    Particle particles[100];
 } Scene;
 
 /**

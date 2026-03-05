@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <time.h>
 #include "scene.h"
 #include <GL/gl.h>
 #include <stdio.h>
@@ -16,6 +18,7 @@ void add_box(Scene* scene, float min_x, float max_x, float min_z, float max_z) {
 }
 
 void init_scene(Scene* scene) {
+    srand(time(NULL));
     glEnable(GL_TEXTURE_2D);
 
     /* Initialize light, fog intensity to default */
@@ -87,6 +90,18 @@ void init_scene(Scene* scene) {
     /* Initialize help overlay */
     scene->show_help = 0;
     scene->help_texture = load_texture("assets/textures/help.png");
+
+    /* Initialize particles (Zero out everything to prevent memory garbage crashes!) */
+    for (int p = 0; p < 100; p++) {
+        scene->particles[p].x = 0.0f;
+        scene->particles[p].y = 0.0f;
+        scene->particles[p].z = 0.0f;
+        scene->particles[p].vx = 0.0f;
+        scene->particles[p].vy = 0.0f;
+        scene->particles[p].vz = 0.0f;
+        scene->particles[p].life = 0.0f; /* Start dead to respawn immediately */
+        scene->particles[p].fade = 1.0f; /* Safe fade value */
+    }
 }
 
 void update_scene(Scene* scene, double time_step, float player_x, float player_z) {
@@ -108,6 +123,33 @@ void update_scene(Scene* scene, double time_step, float player_x, float player_z
 
         while (scene->sword_rotation > 360.0f) {
             scene->sword_rotation -= 360.0f;
+        }
+    }
+
+    /* Update particles (Move and respawn sparks) */
+    for (int p = 0; p < 100; p++) {
+        /* Move based on velocity and time step */
+        scene->particles[p].x += scene->particles[p].vx * (float)time_step;
+        scene->particles[p].y += scene->particles[p].vy * (float)time_step;
+        scene->particles[p].z += scene->particles[p].vz * (float)time_step;
+        
+        /* Decrease lifespan */
+        scene->particles[p].life -= scene->particles[p].fade * (float)time_step;
+
+        /* Respawn at the anvil if the particle is dead (X=0.0, Y=0.5, Z=-3.0) */
+        if (scene->particles[p].life <= 0.0f) {
+            scene->particles[p].life = 1.0f;
+            scene->particles[p].fade = (float)(rand() % 100) / 100.0f + 0.5f; /* Fade speed */
+            
+            /* Spread them slightly around the anvil */
+            scene->particles[p].x = ((float)(rand() % 100) / 100.0f - 0.5f) * 0.4f;
+            scene->particles[p].y = 0.9f; /* Spawn height */
+            scene->particles[p].z = -3.0f + ((float)(rand() % 100) / 100.0f - 0.5f) * 0.4f;
+            
+            /* Random velocity upward and slightly sideways */
+            scene->particles[p].vx = ((float)(rand() % 100) / 100.0f - 0.5f) * 1.5f;
+            scene->particles[p].vy = ((float)(rand() % 100) / 100.0f) * 2.0f + 0.5f; /* Moves up */
+            scene->particles[p].vz = ((float)(rand() % 100) / 100.0f - 0.5f) * 1.5f;
         }
     }
 }
@@ -304,6 +346,26 @@ void render_scene(const Scene* scene) {
         glBindTexture(GL_TEXTURE_2D, scene->sword_texture);
         draw_model(&(scene->sword));
     glPopMatrix();
+
+    /* 4. Render particles (Draw sparks) */
+    /* Disable lighting and textures so the particles "glow" with their own color */
+    glDisable(GL_LIGHTING);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glPointSize(5.0f); /* Size of the sparks */
+
+    glBegin(GL_POINTS);
+    for (int p = 0; p < 100; p++) {
+        if (scene->particles[p].life > 0.0f) {
+            /* Color: Starts yellow and turns reddish as it ages (life decreases) */
+            glColor3f(1.0f, scene->particles[p].life, 0.0f);
+            glVertex3f(scene->particles[p].x, scene->particles[p].y, scene->particles[p].z);
+        }
+    }
+    glEnd();
+    
+    /* Re-enable lighting for other objects */
+    glEnable(GL_LIGHTING);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 

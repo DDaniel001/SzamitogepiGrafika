@@ -17,6 +17,23 @@ void add_box(Scene* scene, float min_x, float max_x, float min_z, float max_z) {
     }
 }
 
+/* Helper function to create a shadow projection matrix for the Y=0 plane */
+void calculate_shadow_matrix(float m[16], float light_pos[4]) {
+    /* The floor is at Y=0, so the plane equation is: 0x + 1y + 0z + 0 = 0 */
+    float dot = light_pos[1]; /* Plane normal (0,1,0) dot light_pos */
+
+    for (int i = 0; i < 16; i++) m[i] = 0.0f;
+
+    m[0] = dot;
+    m[5] = 0.0f; 
+    m[10] = dot;
+    m[15] = dot;
+
+    m[4] = -light_pos[0];
+    m[6] = -light_pos[2];
+    m[7] = -1.0f;
+}
+
 void init_scene(Scene* scene) {
     srand(time(NULL));
     glEnable(GL_TEXTURE_2D);
@@ -239,7 +256,7 @@ void render_scene(const Scene* scene) {
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
 
-    GLfloat light_position[] = { 0.0f, 2.5f, -1.0f, 1.0f };
+    GLfloat light_position[] = { 2.0f, 4.0f, -2.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -256,6 +273,46 @@ void render_scene(const Scene* scene) {
     glFogf(GL_FOG_DENSITY, scene->fog_density);
     
     glHint(GL_FOG_HINT, GL_NICEST);
+
+/* --- RENDERING SHADOWS --- */
+    float shadow_mat[16];
+    calculate_shadow_matrix(shadow_mat, light_position);
+
+    glDisable(GL_LIGHTING);   /* Shadow should be a solid dark color */
+    glDisable(GL_TEXTURE_2D); /* No texturing for shadows */
+    glEnable(GL_BLEND);       /* Enable transparency */
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    /* Enable polygon offset to prevent Z-fighting with the floor */
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(-1.0f, -1.0f);
+
+    glColor4f(0.0f, 0.0f, 0.0f, 0.4f); /* Semi-transparent black color */
+
+    /* 1. Anvil shadow */
+    glPushMatrix();
+        glMultMatrixf(shadow_mat); /* Apply the shadow projection matrix */
+        glTranslatef(0.0f, -0.4f, -3.0f); 
+        glScalef(0.4f, 0.4f, 0.4f); 
+        draw_model(&(scene->anvil));
+    glPopMatrix();
+
+    /* 2. Sword shadow */
+    glPushMatrix();
+        glMultMatrixf(shadow_mat);
+        glTranslatef(0.0f, 1.75f, -3.0f); 
+        glRotatef(scene->sword_rotation, 0.0f, 1.0f, 0.0f); 
+        glRotatef(90.0f, 1.0f, 0.0f, 0.0f); 
+        glScalef(0.03f, 0.03f, 0.03f); 
+        draw_model(&(scene->sword));
+    glPopMatrix();
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    glDisable(GL_BLEND);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     /* 1. Render floor */
     glBindTexture(GL_TEXTURE_2D, scene->floor_texture);

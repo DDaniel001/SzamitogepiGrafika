@@ -144,9 +144,27 @@ void handle_input(App* app) {
                     if (app->camera.rotation_x < -90.0f) app->camera.rotation_x = -90.0f;
                 }
                 break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    /* Exact position of click */
+                    int x = event.button.x;
+                    int y = event.button.y;
+                    
+                    /* Pick function call */
+                    app->scene.selected_object_id = pick_object(
+                        &(app->scene), 
+                        &(app->camera), 
+                        x, y, 
+                        app->window_width, 
+                        app->window_height
+                    );
+                }
+                break;
         }
     }
 }
+
 
 void update_app(App* app) {
     Uint32 current_time = SDL_GetTicks();

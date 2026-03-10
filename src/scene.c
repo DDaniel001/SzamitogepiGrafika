@@ -41,6 +41,7 @@ void init_scene(Scene* scene) {
     /* Initialize light, fog intensity to default */
     scene->light_intensity = 1.0f;
     scene->fog_density = 0.08f;
+    scene->selected_object_id = 0; /* Default: no object selected */
 
     /* Setup lighting */
     glEnable(GL_LIGHTING);
@@ -376,6 +377,13 @@ void render_scene(const Scene* scene) {
         glRotatef(0.0f, 1.0f, 0.0f, 0.0f); 
         glScalef(0.4f, 0.4f, 0.4f);
 
+        /* Highlight if selected */
+        if (scene->selected_object_id == 1) {
+            glColor3f(1.0f, 0.5f, 0.5f); /* Reddish tint */
+        } else {
+            glColor3f(1.0f, 1.0f, 1.0f);
+        }
+
         GLfloat material_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, 60.0f);
@@ -399,6 +407,13 @@ void render_scene(const Scene* scene) {
         glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
         
         glScalef(0.03f, 0.03f, 0.03f);
+
+        /* Highlight if selected */
+        if (scene->selected_object_id == 2) {
+            glColor3f(1.0f, 0.5f, 0.5f); /* Reddish tint */
+        } else {
+            glColor3f(1.0f, 1.0f, 1.0f);
+        }
 
         glBindTexture(GL_TEXTURE_2D, scene->sword_texture);
         draw_model(&(scene->sword));
@@ -430,4 +445,41 @@ void render_scene(const Scene* scene) {
     if (scene->show_help) {
         draw_help(scene->help_texture);
     }
+}
+
+/* Color Picking Implementation */
+int pick_object(Scene* scene, const Camera* camera, int x, int y, int width, int height) {
+    (void)width; /* Avoid unused parameter warning */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    set_view(camera);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_FOG);
+    glDisable(GL_TEXTURE_2D);
+
+    /* ID 1: Anvil */
+    glPushMatrix();
+        glTranslatef(0.0f, -0.4f, -3.0f);
+        glScalef(0.4f, 0.4f, 0.4f);
+        glColor3ub(1, 0, 0); 
+        draw_model(&(scene->anvil));
+    glPopMatrix();
+
+    /* ID 2: Sword */
+    glPushMatrix();
+        glTranslatef(0.0f, 1.75f, -3.0f);
+        glRotatef(scene->sword_rotation, 0.0f, 1.0f, 0.0f);
+        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+        glScalef(0.03f, 0.03f, 0.03f);
+        glColor3ub(2, 0, 0);
+        draw_model(&(scene->sword));
+    glPopMatrix();
+
+    unsigned char pixel[3];
+    glReadPixels(x, height - y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_FOG);
+    glEnable(GL_LIGHTING);
+
+    return (int)pixel[0];
 }

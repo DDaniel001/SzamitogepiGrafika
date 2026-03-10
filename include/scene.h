@@ -35,6 +35,7 @@ typedef struct Scene {
     float light_intensity;
     float fog_density;
     int show_help;
+    int selected_object_id;
 
     BoundingBox boxes[10];
     int box_count;
@@ -62,5 +63,7 @@ void update_scene(Scene* scene, double time_step, float player_x, float player_z
 void render_scene(const Scene* scene);
 
 bool check_collision(const Scene* scene, float x, float z);
+
+int pick_object(Scene* scene, const Camera* camera, int x, int y, int width, int height);
 
 #endif

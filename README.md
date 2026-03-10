@@ -20,7 +20,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 - [x] **Ütközésvizsgálat (Bounding-box):** A kamerával nem lehet átmenni a falakon és a tárgyakon.
 - [x] **Köd hatás (Fog):** Dinamikus, távolságfüggő köd/füst a műhely levegőjében a hangulat fokozására.
 - [x] **Részecskerendszer (Particle system):** Felszálló szikrák vagy tűz a fáklya/üllő körül.
-- [ ] **Objektumkijelölés (Object selection):** Objektumok kijelölése egérrel.
+- [x] **Objektumkijelölés (Object selection):** Objektumok kijelölése egérrel.
 - [x] **Árnyék (Shadow):** Objektumok árnyékot vetnek.
 
 ---

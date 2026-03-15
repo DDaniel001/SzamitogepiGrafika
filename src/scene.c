@@ -91,6 +91,11 @@ void init_scene(Scene* scene) {
         printf("Error: Failed to load sword model!\n");
     }
 
+    scene->forge_texture = load_texture("assets/textures/forge.png");
+    if (!load_model(&(scene->forge), "assets/models/forge.obj")) {
+        printf("Error: Failed to load forge model!\n");
+    }
+
     scene->sword_rotation = 0.0f;
 
     /* Setup collision detection (Bounding boxes) */
@@ -104,6 +109,9 @@ void init_scene(Scene* scene) {
     add_box(scene,  9.8f,  11.0f, -10.0f, 10.0f); /* Right wall */
     add_box(scene, -10.0f, 10.0f, -11.0f, -9.8f); /* Front wall */
     add_box(scene, -10.0f, 10.0f,  9.8f,  11.0f); /* Back wall */
+
+    /* 3. Box for the forge */
+    add_box(scene, -6.0f, -2.0f, -10.0f, -7.8f);
 
     /* Initialize help overlay */
     scene->show_help = 0;
@@ -154,20 +162,19 @@ void update_scene(Scene* scene, double time_step, float player_x, float player_z
         /* Decrease lifespan */
         scene->particles[p].life -= scene->particles[p].fade * (float)time_step;
 
-        /* Respawn at the anvil if the particle is dead (X=0.0, Y=0.5, Z=-3.0) */
+        /* Respawn if dead */
         if (scene->particles[p].life <= 0.0f) {
             scene->particles[p].life = 1.0f;
-            scene->particles[p].fade = (float)(rand() % 100) / 100.0f + 0.5f; /* Fade speed */
+            scene->particles[p].fade = (float)(rand() % 100) / 100.0f + 0.4f;
             
-            /* Spread them slightly around the anvil */
-            scene->particles[p].x = ((float)(rand() % 100) / 100.0f - 0.5f) * 0.4f;
-            scene->particles[p].y = 0.9f; /* Spawn height */
-            scene->particles[p].z = -3.0f + ((float)(rand() % 100) / 100.0f - 0.5f) * 0.4f;
+            /* Spawn position */
+            scene->particles[p].x = -4.0f + ((float)(rand() % 100) / 100.0f - 0.5f) * 0.6f;
+            scene->particles[p].y = 0.15f; /* Fire height */
+            scene->particles[p].z = -9.4f + ((float)(rand() % 100) / 100.0f - 0.5f) * 0.6f;
             
-            /* Random velocity upward and slightly sideways */
-            scene->particles[p].vx = ((float)(rand() % 100) / 100.0f - 0.5f) * 1.5f;
-            scene->particles[p].vy = ((float)(rand() % 100) / 100.0f) * 2.0f + 0.5f; /* Moves up */
-            scene->particles[p].vz = ((float)(rand() % 100) / 100.0f - 0.5f) * 1.5f;
+            scene->particles[p].vx = ((float)(rand() % 100) / 100.0f - 0.5f) * 1.0f;
+            scene->particles[p].vy = ((float)(rand() % 100) / 100.0f) * 2.0f + 0.5f;
+            scene->particles[p].vz = ((float)(rand() % 100) / 100.0f - 0.5f) * 1.0f;
         }
     }
 }
@@ -308,6 +315,13 @@ void render_scene(const Scene* scene) {
         draw_model(&(scene->sword));
     glPopMatrix();
 
+    /* 3. Forge shadow */
+    glPushMatrix();
+        glMultMatrixf(shadow_mat);
+        glTranslatef(-4.0f, -0.4f, -9.4f);
+        draw_model(&(scene->forge));
+    glPopMatrix();
+
     glDisable(GL_POLYGON_OFFSET_FILL);
 
     glDisable(GL_BLEND);
@@ -419,7 +433,16 @@ void render_scene(const Scene* scene) {
         draw_model(&(scene->sword));
     glPopMatrix();
 
-    /* 4. Render particles (Draw sparks) */
+    /* 4. Render Forge */
+    glPushMatrix();
+        glTranslatef(-4.0f, -0.4f, -9.4f);
+        if (scene->selected_object_id == 3) glColor3f(1.0f, 0.5f, 0.5f);
+        else glColor3f(1.0f, 1.0f, 1.0f);
+        glBindTexture(GL_TEXTURE_2D, scene->forge_texture);
+        draw_model(&(scene->forge));
+    glPopMatrix();
+
+    /* 5. Render particles (Draw sparks) */
     /* Disable lighting and textures so the particles "glow" with their own color */
     glDisable(GL_LIGHTING);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -472,6 +495,13 @@ int pick_object(Scene* scene, const Camera* camera, int x, int y, int width, int
         glScalef(0.03f, 0.03f, 0.03f);
         glColor3ub(2, 0, 0);
         draw_model(&(scene->sword));
+    glPopMatrix();
+
+    /* ID 3: Forge */
+    glPushMatrix();
+        glTranslatef(-4.0f, -0.4f, -9.4f);
+        glColor3ub(3, 0, 0); 
+        draw_model(&(scene->forge));
     glPopMatrix();
 
     unsigned char pixel[3];

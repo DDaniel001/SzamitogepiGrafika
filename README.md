@@ -69,6 +69,7 @@ A projektben felhasznált 3D modellek és textúrák külső forrásból szárma
 * **Kard textúra és 3D modell (Sword):** [Free3D.com - Sting Sword](https://free3d.com/3d-model/sting-sword-128810.html) (A modell motorhoz igazítva, triangulálva lett).
 * **Fal textúra (Wall):** [Pixabay.com - Brick Wall](https://pixabay.com/photos/brick-wall-red-structure-masonry-1916752)
 * **Plafon textúra (Ceiling):** [Pixabay.com - Wooden Boards](https://pixabay.com/photos/wood-wooden-boards-wooden-planks-411643)
+* **Kohó textúra és 3D modell (Forge):** [Sketchfab.com - Forge by Karosio](https://sketchfab.com/3d-models/forge-c0461257aba249098bf154d58ce8a1b2)
 
 ---
 

@@ -7,7 +7,7 @@ int main(int argc, char* argv[]) {
 
     App app;
 
-    if (init_app(&app, 1024, 768, "Kovacsmuhely OpenGL")) {
+    if (init_app(&app, 1024, 768, "Blacksmith OpenGL")) {
         
         while (app.is_running) {
             handle_input(&app);
@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
             render_app(&app);
         }
     } else {
-        printf("Hiba tortent az inicializalas soran!\n");
+        printf("An error occurred  during initialisation!\n");
         return 1;
     }
 

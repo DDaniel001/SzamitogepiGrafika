@@ -70,6 +70,8 @@ A projektben felhasznált 3D modellek és textúrák külső forrásból szárma
 * **Fal textúra (Wall):** [Pixabay.com - Brick Wall](https://pixabay.com/photos/brick-wall-red-structure-masonry-1916752)
 * **Plafon textúra (Ceiling):** [Pixabay.com - Wooden Boards](https://pixabay.com/photos/wood-wooden-boards-wooden-planks-411643)
 * **Kohó textúra és 3D modell (Forge):** [Sketchfab.com - Forge by Karosio](https://sketchfab.com/3d-models/forge-c0461257aba249098bf154d58ce8a1b2)
+* **Ablak textúra és 3D modell (Window):** [Sketchfab.com - Window by demidrew](https://sketchfab.com/3d-models/window-cdfd63b78ed84fc1a840352df4c2e146)
+* **Ajtó textúra és 3D modell (Door):** [Sketchfab.com - Rounded Wooden Door by Valo Niskanen](https://sketchfab.com/3d-models/rounded-wooden-door-5ce4dc4a03f74851b618c6d6e6308468)
 
 ---
 

@@ -32,14 +32,24 @@ typedef struct Scene {
     GLuint sword_texture;
     Model forge;
     GLuint forge_texture;
+    Model door;
+    GLuint door_texture;
+    Model window;
+    GLuint window_texture;
+    Model door_frame;
+    GLuint door_frame_texture;
+    Model door_knob;
+    GLuint door_knob_texture;
+    Model window_screen;
+    GLuint window_screen_texture;
     float sword_rotation;
     GLuint help_texture;
     float light_intensity;
     float fog_density;
     int show_help;
-    int selected_object_id; /* 0: none, 1: anvil, 2: sword, 3: forge */
+    int selected_object_id; /* 0: none, 1: anvil, 2: sword, 3: forge, 4: door, 5: window 1, 6: window 2 */
 
-    BoundingBox boxes[10];
+    BoundingBox boxes[15];
     int box_count;
 
     Particle particles[100];

@@ -8,7 +8,7 @@
 
 /* Helper function to add a bounding box to the scene */
 void add_box(Scene* scene, float min_x, float max_x, float min_z, float max_z) {
-    if (scene->box_count < 10) {
+    if (scene->box_count < 15) {
         scene->boxes[scene->box_count].min_x = min_x;
         scene->boxes[scene->box_count].max_x = max_x;
         scene->boxes[scene->box_count].min_z = min_z;
@@ -82,6 +82,31 @@ void init_scene(Scene* scene) {
         printf("Error: Failed to load anvil model!\n");
     }
 
+    scene->door_texture = load_texture("assets/textures/door.png");
+    if (!load_model(&(scene->door), "assets/models/door.obj")) {
+        printf("Error: Failed to load door model!\n");
+    }
+
+    scene->door_frame_texture = load_texture("assets/textures/door_frame.png");
+    if (!load_model(&(scene->door_frame), "assets/models/door_frame.obj")) {
+        printf("Error: Failed to load door knob model!\n");
+    }
+    
+    scene->door_knob_texture = load_texture("assets/textures/door_knob.png");
+    if (!load_model(&(scene->door_knob), "assets/models/door_knob.obj")) {
+        printf("Error: Failed to load door knob model!\n");
+    }
+
+    scene->window_texture = load_texture("assets/textures/window.png");
+    if (!load_model(&(scene->window), "assets/models/window.obj")) {
+        printf("Error: Failed to load window model!\n");
+    }
+
+    scene->window_screen_texture = load_texture("assets/textures/window_screen.png");
+    if (!load_model(&(scene->window_screen), "assets/models/window_screen.obj")) {
+        printf("Error: Failed to load window model!\n");
+    }
+
     scene->sword_texture = load_texture("assets/textures/sword.png");
     if (scene->sword_texture == 0) {
         printf("Error: Failed to load sword texture!\n");
@@ -112,6 +137,15 @@ void init_scene(Scene* scene) {
 
     /* 3. Box for the forge */
     add_box(scene, -6.0f, -2.0f, -10.0f, -7.8f);
+
+    /* 4. Box for the door */
+    add_box(scene, -10.5f, -9.5f, -1.3f, 1.3f);
+
+    /* 5. Box for Window 1 */
+    add_box(scene, 9.5f, 10.0f, -2.5f, 2.5f);
+
+    /* 6. Box for Window 2 */
+    add_box(scene, -2.5f, 2.5f, 9.5f, 10.0f);
 
     /* Initialize help overlay */
     scene->show_help = 0;
@@ -256,15 +290,22 @@ void draw_help(GLuint texture_id) {
 void render_scene(const Scene* scene) {
     float i = scene->light_intensity;
 
+    /* Basic light color
     GLfloat ambient_light[]  = { 0.15f, 0.15f, 0.15f, 1.0f }; 
     GLfloat diffuse_light[]  = { 0.8f * i, 0.8f * i, 0.8f * i, 1.0f };
     GLfloat specular_light[] = { 1.0f * i, 1.0f * i, 1.0f * i, 1.0f };
+    */
+
+    /* Orange tint */
+    GLfloat ambient_light[]  = { 0.2f, 0.1f, 0.05f, 1.0f }; 
+    GLfloat diffuse_light[]  = { 1.0f * i, 0.5f * i, 0.2f * i, 1.0f };
+    GLfloat specular_light[] = { 1.0f * i, 0.8f * i, 0.5f * i, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
 
-    GLfloat light_position[] = { 2.0f, 4.0f, -2.0f, 1.0f };
+    GLfloat light_position[] = { -4.0f, 6.0f, -7.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -299,8 +340,8 @@ void render_scene(const Scene* scene) {
 
     /* 1. Anvil shadow */
     glPushMatrix();
-        glMultMatrixf(shadow_mat); /* Apply the shadow projection matrix */
-        glTranslatef(0.0f, -0.4f, -3.0f); 
+        glMultMatrixf(shadow_mat);
+        glTranslatef(0.0f, 0.0f, -3.0f); 
         glScalef(0.4f, 0.4f, 0.4f); 
         draw_model(&(scene->anvil));
     glPopMatrix();
@@ -318,7 +359,7 @@ void render_scene(const Scene* scene) {
     /* 3. Forge shadow */
     glPushMatrix();
         glMultMatrixf(shadow_mat);
-        glTranslatef(-4.0f, -0.4f, -9.4f);
+        glTranslatef(-4.0f, 0.0f, -9.4f);
         draw_model(&(scene->forge));
     glPopMatrix();
 
@@ -417,7 +458,7 @@ void render_scene(const Scene* scene) {
         /* Rotate the sword around Y axis for animation */
         glRotatef(scene->sword_rotation, 0.0f, 1.0f, 0.0f);
         
-        /* Stand the sword upright! */
+        /* Stand the sword upright */
         glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
         
         glScalef(0.03f, 0.03f, 0.03f);
@@ -442,7 +483,59 @@ void render_scene(const Scene* scene) {
         draw_model(&(scene->forge));
     glPopMatrix();
 
-    /* 5. Render particles (Draw sparks) */
+    /* 5. Render Door */
+    glPushMatrix();
+        glTranslatef(-9.9f, 1.45f, 0.0f);
+        glScalef(0.5f, 0.45f, 0.505f);
+        if (scene->selected_object_id == 4) glColor3f(1.0f, 0.5f, 0.5f);
+        else glColor3f(1.0f, 1.0f, 1.0f);
+
+        /* 1. Door piece */
+        glBindTexture(GL_TEXTURE_2D, scene->door_texture);
+        draw_model(&(scene->door));
+
+        /* 2. Door frame */
+        glTranslatef(0.001f, 0.001f, -0.001f);
+        glBindTexture(GL_TEXTURE_2D, scene->door_frame_texture);
+        draw_model(&(scene->door_frame));
+
+        /* 3. Door knob */
+        glTranslatef(0.01f, 0.001f, 0.001f);
+        glBindTexture(GL_TEXTURE_2D, scene->door_knob_texture);
+        draw_model(&(scene->door_knob));
+    glPopMatrix();
+
+    /* 6. Render Window 1 */
+    glPushMatrix();
+        glTranslatef(9.8f, 1.0f, 0.0f);
+        glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+        glScalef(0.6f, 0.5f, 0.5f);
+        if (scene->selected_object_id == 5) glColor3f(1.0f, 0.5f, 0.5f);
+        else glColor3f(1.0f, 1.0f, 1.0f);
+
+        glBindTexture(GL_TEXTURE_2D, scene->window_texture);
+        draw_model(&(scene->window));
+        glTranslatef(0.0f, 0.0f, 0.01f);
+        glBindTexture(GL_TEXTURE_2D, scene->window_screen_texture);
+        draw_model(&(scene->window_screen));
+    glPopMatrix();
+
+    /* 7. Render Window 2 */
+    glPushMatrix();
+        glTranslatef(0.0f, 1.0f, 9.8f);
+        glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+        glScalef(0.6f, 0.5f, 0.5f);
+        if (scene->selected_object_id == 6) glColor3f(1.0f, 0.5f, 0.5f);
+        else glColor3f(1.0f, 1.0f, 1.0f);
+
+        glBindTexture(GL_TEXTURE_2D, scene->window_texture);
+        draw_model(&(scene->window));
+        glTranslatef(0.0f, 0.0f, 0.01f);
+        glBindTexture(GL_TEXTURE_2D, scene->window_screen_texture);
+        draw_model(&(scene->window_screen));
+    glPopMatrix();
+
+    /* 8. Render particles (Draw sparks) */
     /* Disable lighting and textures so the particles "glow" with their own color */
     glDisable(GL_LIGHTING);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -502,6 +595,30 @@ int pick_object(Scene* scene, const Camera* camera, int x, int y, int width, int
         glTranslatef(-4.0f, -0.4f, -9.4f);
         glColor3ub(3, 0, 0); 
         draw_model(&(scene->forge));
+    glPopMatrix();
+
+    /* ID 4: Door */
+    glPushMatrix();
+        glTranslatef(-9.8f, 1.0f, 0.0f);
+        glRotatef(0.0f, 90.0f, 0.0f, 0.0f);
+        glColor3ub(4, 0, 0); 
+        draw_model(&(scene->door));
+    glPopMatrix();
+
+    /* ID 5: Window 1 */
+    glPushMatrix();
+        glTranslatef(9.8f, 1.0f, 0.0f);
+        glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+        glColor3ub(5, 0, 0); 
+        draw_model(&(scene->window));
+    glPopMatrix();
+
+    /* ID 6: Window 2 */
+    glPushMatrix();
+        glTranslatef(0.0f, 1.2f, 9.8f);
+        glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+        glScalef(0.6f, 0.6f, 0.6f);
+        glColor3ub(6, 0, 0); draw_model(&(scene->window));
     glPopMatrix();
 
     unsigned char pixel[3];

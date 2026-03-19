@@ -10,8 +10,8 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 
 ### Alapkövetelmények (Elégséges szint)
 - [x] **Kamerakezelés:** A tér egérrel és billentyűzettel (WASD) szabadon bejárható.
-- [x] **Textúrák:** A 3D modellekre és a környezetre textúrák vannak feszítve (pl. kőpadló).
-- [x] **Objektumok:** Térbeli 3D modellek (obj fájlok) betöltése és megjelenítése (pl. üllő, kard, fáklya).
+- [x] **Textúrák:** A 3D modellekre és a környezetre textúrák vannak feszítve (pl. padló, kard).
+- [x] **Objektumok:** Térbeli 3D modellek (obj fájlok) betöltése és megjelenítése (üllő, kard, ajtó, ablak).
 - [x] **Fények:** A színtér bevilágítása, a fényerő interaktív állítása a `+` és `-` gombokkal.
 - [x] **Animáció:** Interaktív, időalapú (Delta time) mozgás (pl. lebegő/forgó kard).
 - [x] **Használati útmutató:** Az `F1` gomb lenyomására megjelenő 2D-s overlay súgó.
@@ -19,7 +19,7 @@ A projekt az alábbi kötelező és extra funkciókat valósítja meg a maximál
 ### Tervezett Többletfunkciók (+3 jegy)
 - [x] **Ütközésvizsgálat (Bounding-box):** A kamerával nem lehet átmenni a falakon és a tárgyakon.
 - [x] **Köd hatás (Fog):** Dinamikus, távolságfüggő köd/füst a műhely levegőjében a hangulat fokozására.
-- [x] **Részecskerendszer (Particle system):** Felszálló szikrák vagy tűz a fáklya/üllő körül.
+- [x] **Részecskerendszer (Particle system):** Felszálló szikrák/tűz a kohóban.
 - [x] **Objektumkijelölés (Object selection):** Objektumok kijelölése egérrel.
 - [x] **Árnyék (Shadow):** Objektumok árnyékot vetnek.
 

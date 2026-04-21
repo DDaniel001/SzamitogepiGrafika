@@ -4,7 +4,7 @@ Ez a projekt a Számítógépi grafika tantárgy féléves beadandó feladata. A
 
 A program C nyelven íródott, az ablakkezelést és a bemeneteket az **SDL2** könyvtár, a 3D-s megjelenítést pedig az **OpenGL** végzi.
 
-A programhoz tartozó assets mappa letölthető az alábbi linken: [Assets link](https://drive.google.com/drive/folders/1gqk_7MZS-2Mfkima3W9S1yyxYkhjyNDN?usp=sharing))
+A programhoz tartozó assets mappa letölthető az alábbi linken: [Assets link](https://drive.google.com/drive/folders/1gqk_7MZS-2Mfkima3W9S1yyxYkhjyNDN?usp=sharing)
 
 ## Specifikáció és Követelmények
 
